@@ -29,6 +29,8 @@ public class MainActivity extends MainActivityTask {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		startCommunicationService();
 
 		/* GUI Elements */
 		txt_uuid = (TextView) findViewById(R.id.txt_uuid);				
@@ -60,6 +62,7 @@ public class MainActivity extends MainActivityTask {
 	protected void onDestroy() {
 		super.onDestroy();
 		stopMainActivityTask();
+		stopCommunicationService();
 	}
 	
 	@Override

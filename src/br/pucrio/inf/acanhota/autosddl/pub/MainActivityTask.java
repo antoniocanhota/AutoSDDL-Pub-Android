@@ -33,7 +33,7 @@ public abstract class MainActivityTask extends Activity {
 		if (!isRunning()) {
 			onMainActivityStart();
 			
-			startCommunicationService();
+			sendStartMainActivityTaskMessage();
 			
 			handler = new Handler();
 			runnable = new Runnable(){
@@ -47,6 +47,14 @@ public abstract class MainActivityTask extends Activity {
 		}
 	}
 
+	private void sendStartMainActivityTaskMessage() {
+		VehicleMessage vehicleMessage = new VehicleMessage(VehicleMessageType.START);			
+		Intent i = new Intent(MainActivityTask.this, CommunicationService.class);
+		i.setAction(CommunicationService.ACTION_SEND_VEHICLE_STATUS);
+		i.putExtra(CommunicationService.VEHICLE_STATUS, vehicleMessage);
+		LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(i);		
+	}
+
 	protected abstract void onMainActivityStart();
 
 	public void stopMainActivityTask() {
@@ -55,10 +63,18 @@ public abstract class MainActivityTask extends Activity {
 			runnable = null;
 			handler = null;
 			
-			stopCommunicationService();
+			sendStopMainActivityTaskMessage();
 			
 			onMainActivityStop();
 		}
+	}
+
+	private void sendStopMainActivityTaskMessage() {
+		VehicleMessage vehicleMessage = new VehicleMessage(VehicleMessageType.END);			
+		Intent i = new Intent(MainActivityTask.this, CommunicationService.class);
+		i.setAction(CommunicationService.ACTION_SEND_VEHICLE_STATUS);
+		i.putExtra(CommunicationService.VEHICLE_STATUS, vehicleMessage);
+		LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(i);
 	}
 
 	protected abstract void onMainActivityStop();

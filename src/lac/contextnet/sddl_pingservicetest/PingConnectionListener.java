@@ -1,15 +1,12 @@
 package lac.contextnet.sddl_pingservicetest;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.net.SocketAddress;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import lac.cnclib.net.NodeConnection;
 import lac.cnclib.net.NodeConnectionListener;
-import lac.cnclib.sddl.message.ApplicationMessage;
 import lac.cnclib.sddl.serialization.Serialization;
 import android.os.Bundle;
 import android.os.Handler;
@@ -58,15 +55,6 @@ public class PingConnectionListener implements NodeConnectionListener {
 	}
 	
 	public void connected(NodeConnection remoteCon) {
-		ApplicationMessage am = new ApplicationMessage();
-		am.setContentObject("ack");
-		am.setTagList(new ArrayList<String>());
-		am.setSenderID(clientID);
-		try {
-			remoteCon.sendMessage(am);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 			handleNewStatus("connected");
 	}
 
