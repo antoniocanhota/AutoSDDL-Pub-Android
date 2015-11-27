@@ -11,6 +11,7 @@
     
     <!-- Dialog and Toast Messages -->
 	<string name="msg_d_connected">Conectado!</string>
+	<string name="msg_d_already_connected">Já conectado!</string>
 	<string name="msg_d_disconnected">Desconectado!</string>
 	<string name="msg_d_reconnected">Reconectado!</string>
 	<string name="msg_e_servicenotrunning">Communication Service is not running!</string>

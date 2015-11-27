@@ -68,14 +68,18 @@ public class MainActivity extends MainActivityTask {
 			
 			@Override
 			public void onClick(View v) {			
-				IPPort ipPortObj = new IPPort(IP_PORT);
-				
-				/* Starting the communication service */
-				Intent intent = new Intent(MainActivity.this, CommunicationService.class);
-				intent.putExtra("ip", ipPortObj.getIP());
-				intent.putExtra("port", Integer.valueOf(ipPortObj.getPort()));
-				intent.putExtra("uuid", txt_uuid.getText().toString());
-				startService(intent); 
+				if(isMyServiceRunning(CommunicationService.class)) {
+					Toast.makeText(getBaseContext(), getResources().getText(R.string.msg_d_already_connected), Toast.LENGTH_SHORT).show();
+				} else {
+					IPPort ipPortObj = new IPPort(IP_PORT);
+					
+					/* Starting the communication service */
+					Intent intent = new Intent(MainActivity.this, CommunicationService.class);
+					intent.putExtra("ip", ipPortObj.getIP());
+					intent.putExtra("port", Integer.valueOf(ipPortObj.getPort()));
+					intent.putExtra("uuid", txt_uuid.getText().toString());
+					startService(intent); 
+				}
 			}
 		});
 
