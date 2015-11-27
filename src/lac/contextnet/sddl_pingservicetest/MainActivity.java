@@ -38,8 +38,7 @@ public class MainActivity extends MainActivityTask {
 	private static final String PREF_UNIQUE_ID = "PREF_UNIQUE_ID";
 	
 	/* Static Elements */
-	private TextView txt_uuid;
-	private EditText et_ip;
+	private TextView txt_uuid;	
 	private Button btn_ping;
 	private Button btn_startservice;
 	private Button btn_stopservice;
@@ -50,8 +49,7 @@ public class MainActivity extends MainActivityTask {
 		setContentView(R.layout.activity_main);
 
 		/* GUI Elements */
-		txt_uuid = (TextView) findViewById(R.id.txt_uuid);
-		et_ip = (EditText) findViewById(R.id.et_ip);
+		txt_uuid = (TextView) findViewById(R.id.txt_uuid);		
 		btn_ping = (Button) findViewById(R.id.btn_ping);
 		btn_startservice = (Button) findViewById(R.id.btn_startservice);
 		btn_stopservice = (Button) findViewById(R.id.btn_stopservice);
@@ -70,17 +68,8 @@ public class MainActivity extends MainActivityTask {
 		btn_startservice.setOnClickListener(new OnClickListener() {
 			
 			@Override
-			public void onClick(View v) {
-
-				String ipPort = et_ip.getText().toString();
-				
-				if(!IPPort.IPRegexChecker(ipPort))
-				{
-					Toast.makeText(getBaseContext(), getResources().getText(R.string.msg_e_invalid_ip), Toast.LENGTH_LONG).show();
-					return;
-				}
-
-				IPPort ipPortObj = new IPPort(ipPort);
+			public void onClick(View v) {			
+				IPPort ipPortObj = new IPPort(IP_PORT);
 				
 				/* Starting the communication service */
 				Intent intent = new Intent(MainActivity.this, CommunicationService.class);

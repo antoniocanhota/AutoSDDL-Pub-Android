@@ -22,32 +22,12 @@
 	        android:textSize="12sp" />
     </LinearLayout>
     
-    <LinearLayout android:id="@+id/lyt_ip"
-    	android:layout_centerHorizontal="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="24dp"
-        android:layout_below="@id/lyt_uuid" >
-        
-	    <TextView android:id="@+id/txt_ip"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="@string/ip" />
-	    
-	    <EditText android:id="@+id/et_ip"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:hint="@string/ip_hint"
-	        android:textSize="12sp" />
-	    
-    </LinearLayout>
-    
     <LinearLayout android:id="@+id/lyt_servicebtns" 
        		android:orientation="horizontal" 
 	    	android:layout_centerHorizontal="true"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content" 
-        	android:layout_below="@id/lyt_ip"
+        	android:layout_below="@id/lyt_uuid"
         	android:paddingBottom="12dp" >
 	    
 	    <Button android:id="@+id/btn_startservice"

@@ -6,6 +6,7 @@ import android.util.Log;
 
 public abstract class MainActivityTask extends Activity {
 	public static final String APP_NAME = "AutoSDDL-Pub";
+	public static final String IP_PORT = "10.1.1.31:5500";
 
 	private int DELAY_MILLIS = 1000;
 	
