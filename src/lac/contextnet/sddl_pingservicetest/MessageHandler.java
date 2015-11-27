@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
-import br.pucrio.acanhota.autosddl.commons.VehicleStatus;
+import br.pucrio.acanhota.autosddl.commons.VehicleMessage;
 
 public class MessageHandler extends Handler {
 	
@@ -35,9 +35,9 @@ public class MessageHandler extends Handler {
 			{
 				Serializable s = msg.getData().getSerializable("package");
 				
-				if(s instanceof VehicleStatus)
+				if(s instanceof VehicleMessage)
 				{
-					Toast.makeText(context, ((VehicleStatus) s).toString(), Toast.LENGTH_LONG).show();
+					Toast.makeText(context, ((VehicleMessage) s).toString(), Toast.LENGTH_LONG).show();
 				}
 				/* Here you can add different treatments to different types of 
 				 * received data if you decide not to do that on the 

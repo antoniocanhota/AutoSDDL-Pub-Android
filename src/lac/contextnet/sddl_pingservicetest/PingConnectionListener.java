@@ -14,7 +14,7 @@ import lac.cnclib.sddl.serialization.Serialization;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import br.pucrio.acanhota.autosddl.commons.VehicleStatus;
+import br.pucrio.acanhota.autosddl.commons.VehicleMessage;
 
 /**
  * Listener para mensagens do Controlador. 
@@ -87,7 +87,7 @@ public class PingConnectionListener implements NodeConnectionListener {
 		
 		if (className != null) 
 		{
-			if (className.equals(VehicleStatus.class.getCanonicalName()))
+			if (className.equals(VehicleMessage.class.getCanonicalName()))
 				handleNewPackage(s);
 			/* Here you can add different treatments to different types of 
 			 * received data, or repass this logic to the handler. */
