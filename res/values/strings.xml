@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">SDDL-PingServiceTest</string>
+    <string name="app_name">AutoSDDL Pub</string>
     
     <!-- Static Elements -->
     <string name="uuid">UUID:</string>
