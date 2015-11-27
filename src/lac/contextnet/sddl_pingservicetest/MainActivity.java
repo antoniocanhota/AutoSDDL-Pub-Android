@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -44,6 +45,11 @@ public class MainActivity extends Activity {
 	private Button btn_startservice;
 	private Button btn_stopservice;
 	
+	private Handler handler;
+	private Runnable runnable;
+	
+	private int DELAY_MILLIS = 1000;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -62,17 +68,16 @@ public class MainActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				if(!isMyServiceRunning(CommunicationService.class))
-					Toast.makeText(getBaseContext(), getResources().getText(R.string.msg_e_servicenotrunning), Toast.LENGTH_SHORT).show();
-				else
-				{
-					VehicleStatus ping = new VehicleStatus();
-					
-					/* Calling the SendPingMsg action to the PingBroadcastReceiver */
-					Intent i = new Intent(MainActivity.this, CommunicationService.class);
-					i.setAction("lac.contextnet.sddl_pingservicetest.broadcastmessage." + "ActionSendPingMsg");
-					i.putExtra("lac.contextnet.sddl_pingservicetest.broadcastmessage." + "ExtraPingMsg", ping);
-					LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(i);
+				if (handler == null) {
+					handler = new Handler();
+					runnable = new Runnable(){
+						@Override
+						public void run() {
+							pingServer();
+							handler.postDelayed(this, DELAY_MILLIS);
+						}
+					};
+					handler.postDelayed(runnable, DELAY_MILLIS);
 				}
 			}
 		});
@@ -107,11 +112,27 @@ public class MainActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
+				handler.removeCallbacks(runnable);
 				/* Stops the service and finalizes the connection */
 				stopService(new Intent(getBaseContext(), CommunicationService.class));
 			}
 		});
 	}
+	
+	private void pingServer() {
+		if(!isMyServiceRunning(CommunicationService.class))
+			Toast.makeText(getBaseContext(), getResources().getText(R.string.msg_e_servicenotrunning), Toast.LENGTH_SHORT).show();
+		else
+		{
+			VehicleStatus ping = new VehicleStatus();
+			
+			/* Calling the SendPingMsg action to the PingBroadcastReceiver */
+			Intent i = new Intent(MainActivity.this, CommunicationService.class);
+			i.setAction("lac.contextnet.sddl_pingservicetest.broadcastmessage." + "ActionSendVehicleStatus");
+			i.putExtra("lac.contextnet.sddl_pingservicetest.broadcastmessage." + "ExtraPingMsg", ping);
+			LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(i);
+		}
+	};
 	
 	//See http://stackoverflow.com/questions/600207/how-to-check-if-a-service-is-running-in-android
 	private boolean isMyServiceRunning(Class<?> serviceClass) {
