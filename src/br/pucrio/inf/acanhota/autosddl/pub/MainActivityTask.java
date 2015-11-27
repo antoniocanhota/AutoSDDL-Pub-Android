@@ -12,6 +12,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import br.pucrio.acanhota.autosddl.commons.VehicleMessage;
+import br.pucrio.acanhota.autosddl.commons.VehicleMessageType;
 import lac.contextnet.sddl_pingservicetest.CommunicationService;
 import lac.contextnet.sddl_pingservicetest.IPPort;
 
@@ -63,12 +64,12 @@ public abstract class MainActivityTask extends Activity {
 	protected abstract void onMainActivityStop();
 	
 	public void mainActivitTask() {
-		VehicleMessage ping = new VehicleMessage();
+		VehicleMessage vehicleMessage = new VehicleMessage(VehicleMessageType.STATUS);
 		
 		/* Calling the SendPingMsg action to the PingBroadcastReceiver */
 		Intent i = new Intent(MainActivityTask.this, CommunicationService.class);
-		i.setAction("lac.contextnet.sddl_pingservicetest.broadcastmessage." + "ActionSendVehicleStatus");
-		i.putExtra("lac.contextnet.sddl_pingservicetest.broadcastmessage." + "ExtraPingMsg", ping);
+		i.setAction(CommunicationService.ACTION_SEND_VEHICLE_STATUS);
+		i.putExtra(CommunicationService.VEHICLE_STATUS, vehicleMessage);
 		LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(i);
 	}
 	
