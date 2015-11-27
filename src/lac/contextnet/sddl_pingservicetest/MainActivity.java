@@ -2,7 +2,6 @@ package lac.contextnet.sddl_pingservicetest;
 
 import java.util.UUID;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
@@ -10,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import br.pucrio.acanhota.autosddl.commons.VehicleStatus;
+import br.pucrio.inf.acanhota.autosddl.pub.MainActivityTask;
 
 /**
  * MainActivity: This is our application's MainActivity. It consists in 
@@ -32,7 +31,7 @@ import br.pucrio.acanhota.autosddl.commons.VehicleStatus;
  * @author andremd
  * 
  */
-public class MainActivity extends Activity {
+public class MainActivity extends MainActivityTask {
 
 	/* Shared Preferences */
 	private static String uniqueID = null;
@@ -44,11 +43,6 @@ public class MainActivity extends Activity {
 	private Button btn_ping;
 	private Button btn_startservice;
 	private Button btn_stopservice;
-	
-	private Handler handler;
-	private Runnable runnable;
-	
-	private int DELAY_MILLIS = 1000;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,17 +62,7 @@ public class MainActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				if (handler == null) {
-					handler = new Handler();
-					runnable = new Runnable(){
-						@Override
-						public void run() {
-							pingServer();
-							handler.postDelayed(this, DELAY_MILLIS);
-						}
-					};
-					handler.postDelayed(runnable, DELAY_MILLIS);
-				}
+				startMainActivityTask();
 			}
 		});
 
@@ -112,14 +96,24 @@ public class MainActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				handler.removeCallbacks(runnable);
-				/* Stops the service and finalizes the connection */
-				stopService(new Intent(getBaseContext(), CommunicationService.class));
+				stopMainActivityTaskAndCommuncationService();
 			}
 		});
 	}
 	
-	private void pingServer() {
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		stopMainActivityTaskAndCommuncationService();
+	}
+	
+	private void stopMainActivityTaskAndCommuncationService() {
+		stopMainActivityTask();				
+		/* Stops the service and finalizes the connection */
+		stopService(new Intent(getBaseContext(), CommunicationService.class));
+	}
+	
+	public void mainActivitTask() {
 		if(!isMyServiceRunning(CommunicationService.class))
 			Toast.makeText(getBaseContext(), getResources().getText(R.string.msg_e_servicenotrunning), Toast.LENGTH_SHORT).show();
 		else
