@@ -17,8 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.infopae.model.PingObject;
+import br.pucrio.acanhota.autosddl.commons.VehicleStatus;
 
 /**
  * MainActivity: This is our application's MainActivity. It consists in 
@@ -67,7 +66,7 @@ public class MainActivity extends Activity {
 					Toast.makeText(getBaseContext(), getResources().getText(R.string.msg_e_servicenotrunning), Toast.LENGTH_SHORT).show();
 				else
 				{
-					PingObject ping = new PingObject();
+					VehicleStatus ping = new VehicleStatus();
 					
 					/* Calling the SendPingMsg action to the PingBroadcastReceiver */
 					Intent i = new Intent(MainActivity.this, CommunicationService.class);
