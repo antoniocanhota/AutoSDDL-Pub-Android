@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 import br.pucrio.inf.acanhota.autosddl.pub.MainActivityTask;
 
 /**
@@ -35,6 +34,7 @@ public class MainActivity extends MainActivityTask {
 		txt_uuid = (TextView) findViewById(R.id.txt_uuid);				
 		btn_startservice = (Button) findViewById(R.id.btn_startservice);
 		btn_stopservice = (Button) findViewById(R.id.btn_stopservice);
+		btn_stopservice.setEnabled(false);
 		txt_uuid.setText(GetUUID(getBaseContext()));
 
 		/* Start Service Button Listener*/
@@ -63,8 +63,14 @@ public class MainActivity extends MainActivityTask {
 	}
 	
 	@Override
-	public void onCommunicationServiceAlreadyStarted() {
-		super.onCommunicationServiceAlreadyStarted();
-		Toast.makeText(getBaseContext(), getResources().getText(R.string.msg_d_already_connected), Toast.LENGTH_SHORT).show();
+	protected void onMainActivityStart() {
+		btn_startservice.setEnabled(false);
+		btn_stopservice.setEnabled(true);
+	}
+	
+	@Override
+	protected void onMainActivityStop() {
+		btn_startservice.setEnabled(true);
+		btn_stopservice.setEnabled(false);
 	}	
 }

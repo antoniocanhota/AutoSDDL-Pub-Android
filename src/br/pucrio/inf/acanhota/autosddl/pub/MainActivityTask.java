@@ -11,12 +11,9 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
-import android.widget.Toast;
 import br.pucrio.acanhota.autosddl.commons.VehicleStatus;
 import lac.contextnet.sddl_pingservicetest.CommunicationService;
 import lac.contextnet.sddl_pingservicetest.IPPort;
-import lac.contextnet.sddl_pingservicetest.R;
 
 public abstract class MainActivityTask extends Activity {
 	public static final String APP_NAME = "AutoSDDL-Pub";
@@ -32,8 +29,11 @@ public abstract class MainActivityTask extends Activity {
 	private Runnable runnable;
 	
 	public void startMainActivityTask() {		
-		startCommunicationService();		
-		if (handler == null) {
+		if (!isRunning()) {
+			onMainActivityStart();
+			
+			startCommunicationService();
+			
 			handler = new Handler();
 			runnable = new Runnable(){
 				@Override
@@ -43,62 +43,49 @@ public abstract class MainActivityTask extends Activity {
 				}	
 			};
 			handler.postDelayed(runnable, DELAY_MILLIS);
-		} else {
-			onMainActivityTaskAlreadStarted();
 		}
 	}
+
+	protected abstract void onMainActivityStart();
 
 	public void stopMainActivityTask() {
-		if (handler != null) {
-			handler.removeCallbacks(runnable);
-		}		
-		runnable = null;
-		handler = null;
-		
-		stopCommunicationService();
-	}
-
-	public void mainActivitTask() {
-		if(!isMyServiceRunning(CommunicationService.class)) {
-			Toast.makeText(getBaseContext(), getResources().getText(R.string.msg_e_servicenotrunning), Toast.LENGTH_SHORT).show();
-		} else {
-			VehicleStatus ping = new VehicleStatus();
+		if (isRunning()) {
+			handler.removeCallbacks(runnable); 
+			runnable = null;
+			handler = null;
 			
-			/* Calling the SendPingMsg action to the PingBroadcastReceiver */
-			Intent i = new Intent(MainActivityTask.this, CommunicationService.class);
-			i.setAction("lac.contextnet.sddl_pingservicetest.broadcastmessage." + "ActionSendVehicleStatus");
-			i.putExtra("lac.contextnet.sddl_pingservicetest.broadcastmessage." + "ExtraPingMsg", ping);
-			LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(i);
+			stopCommunicationService();
+			
+			onMainActivityStop();
 		}
 	}
+
+	protected abstract void onMainActivityStop();
 	
-	public void onMainActivityTaskAlreadStarted() {
-		Log.i(APP_NAME, "Main Activity Task Already Started");
+	public void mainActivitTask() {
+		VehicleStatus ping = new VehicleStatus();
+		
+		/* Calling the SendPingMsg action to the PingBroadcastReceiver */
+		Intent i = new Intent(MainActivityTask.this, CommunicationService.class);
+		i.setAction("lac.contextnet.sddl_pingservicetest.broadcastmessage." + "ActionSendVehicleStatus");
+		i.putExtra("lac.contextnet.sddl_pingservicetest.broadcastmessage." + "ExtraPingMsg", ping);
+		LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(i);
 	}
 	
 	public void startCommunicationService() {
-		if(!isMyServiceRunning(CommunicationService.class)) {
-			IPPort ipPortObj = new IPPort(IP_PORT);
-			
-			/* Starting the communication service */
-			Intent intent = new Intent(MainActivityTask.this, CommunicationService.class);
-			intent.putExtra("ip", ipPortObj.getIP());
-			intent.putExtra("port", Integer.valueOf(ipPortObj.getPort()));
-			intent.putExtra("uuid", GetUUID(getBaseContext()));
-			startService(intent);
-		} else {
-			onCommunicationServiceAlreadyStarted();
-		}
+		IPPort ipPortObj = new IPPort(IP_PORT);
+		
+		/* Starting the communication service */
+		Intent intent = new Intent(MainActivityTask.this, CommunicationService.class);
+		intent.putExtra("ip", ipPortObj.getIP());
+		intent.putExtra("port", Integer.valueOf(ipPortObj.getPort()));
+		intent.putExtra("uuid", GetUUID(getBaseContext()));
+		startService(intent);
 	}
 
 	public void stopCommunicationService() {
 		/* Stops the service and finalizes the connection */
 		stopService(new Intent(getBaseContext(), CommunicationService.class));
-	}
-	
-	
-	public void onCommunicationServiceAlreadyStarted() {
-		Log.i(APP_NAME, "Communication Service Already Started");
 	}
 	
     //See http://stackoverflow.com/questions/600207/how-to-check-if-a-service-is-running-in-android
@@ -110,6 +97,10 @@ public abstract class MainActivityTask extends Activity {
             }
         }
         return false;
+    }
+    
+    protected boolean isRunning() {
+    	return (handler != null);
     }
     
     //See http://androidsnippets.com/generate-random-uuid-and-store-it
