@@ -71,7 +71,7 @@ public class CommunicationService extends Service {
 	private void registerBroadcasts () {
 	
 		IntentFilter filter = new IntentFilter();
-		filter.addAction("lac.contextnet.sddl_pingservicetest.broadcastmessage.ActionSendPingMsg");
+		filter.addAction("lac.contextnet.sddl_pingservicetest.broadcastmessage.ActionSendVehicleStatus");
 		broadcastManager.registerReceiver(mConnBroadcastReceiver, filter);
 	}
 	
@@ -147,7 +147,7 @@ public class CommunicationService extends Service {
 		public void onReceive(Context c, Intent i) {
 			
 			String action = i.getAction();
-			if (action.equals("lac.contextnet.sddl_pingservicetest.broadcastmessage.ActionSendPingMsg")) {
+			if (action.equals("lac.contextnet.sddl_pingservicetest.broadcastmessage.ActionSendVehicleStatus")) {
 				Serializable s = i.getSerializableExtra("lac.contextnet.sddl_pingservicetest.broadcastmessage.ExtraPingMsg");
 				
 				ApplicationMessage am = new ApplicationMessage();
