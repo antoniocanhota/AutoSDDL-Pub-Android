@@ -5,7 +5,6 @@
     
     <!-- Static Elements -->
     <string name="uuid">UUID:</string>
-    <string name="ping">Ping!</string>
     <string name="startservice">Start Service!</string>
     <string name="stopservice">Stop Service!</string>    
     
