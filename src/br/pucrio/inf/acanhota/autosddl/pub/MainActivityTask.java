@@ -63,7 +63,7 @@ public abstract class MainActivityTask extends Activity {
 	}
 
 	private void sendStartMainActivityTaskMessage() {
-		VehicleMessage vehicleMessage = new VehicleMessage(VehicleMessageType.START);			
+		VehicleMessage vehicleMessage = new VehicleMessage(VehicleMessageType.START, isObd2Valid());			
 		Intent i = new Intent(MainActivityTask.this, CommunicationService.class);
 		i.setAction(CommunicationService.ACTION_SEND_VEHICLE_STATUS);
 		i.putExtra(CommunicationService.VEHICLE_STATUS, vehicleMessage);
@@ -85,7 +85,7 @@ public abstract class MainActivityTask extends Activity {
 	}
 
 	private void sendStopMainActivityTaskMessage() {
-		VehicleMessage vehicleMessage = new VehicleMessage(VehicleMessageType.END);			
+		VehicleMessage vehicleMessage = new VehicleMessage(VehicleMessageType.END, isObd2Valid());			
 		Intent i = new Intent(MainActivityTask.this, CommunicationService.class);
 		i.setAction(CommunicationService.ACTION_SEND_VEHICLE_STATUS);
 		i.putExtra(CommunicationService.VEHICLE_STATUS, vehicleMessage);
@@ -95,7 +95,7 @@ public abstract class MainActivityTask extends Activity {
 	protected abstract void onMainActivityStop();
 	
 	public void mainActivitTask() {
-		VehicleMessage vehicleMessage = new VehicleMessage(VehicleMessageType.STATUS);
+		VehicleMessage vehicleMessage = new VehicleMessage(VehicleMessageType.STATUS, isObd2Valid());
 		
 		/* Calling the SendPingMsg action to the PingBroadcastReceiver */
 		Intent i = new Intent(MainActivityTask.this, CommunicationService.class);
