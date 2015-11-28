@@ -18,7 +18,8 @@ import lac.contextnet.sddl_pingservicetest.IPPort;
 
 public abstract class MainActivityTask extends Activity {
 	public static final String APP_NAME = "AutoSDDL-Pub";
-	public static final String IP_PORT = "10.1.1.31:5500";
+	//public static final String IP_PORT = "10.1.1.31:5500";
+	public static final String IP_PORT = "40.84.150.221:5500";
 	
 	/* Shared Preferences */
 	private static String uniqueID = null;

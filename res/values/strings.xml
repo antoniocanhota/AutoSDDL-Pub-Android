@@ -5,6 +5,7 @@
     
     <!-- Static Elements -->
     <string name="uuid">UUID:</string>
+    <string name="conn">Server connection:</string>
     <string name="startservice">Start Service!</string>
     <string name="stopservice">Stop Service!</string>    
     

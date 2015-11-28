@@ -47,6 +47,10 @@ public class CommunicationService extends Service {
 		keepRunning = true;
 		isConnected = false;
 		super.onCreate();
+		
+		/* Broadcast Receiver */
+	    broadcastManager = LocalBroadcastManager.getInstance(getBaseContext());
+		registerBroadcasts();
 	}
 	
 	@Override
@@ -56,10 +60,6 @@ public class CommunicationService extends Service {
 		handler = new MessageHandler(getBaseContext());
 	    extras = intent.getExtras();
 	    
-	    /* Broadcast Receiver */
-	    broadcastManager = LocalBroadcastManager.getInstance(getBaseContext());
-		registerBroadcasts();
-
 		if (!isConnected) {
 			/* Initialize variables */
 			bootstrap();
