@@ -95,7 +95,12 @@ public abstract class MainActivityTask extends Activity {
 	protected abstract void onMainActivityStop();
 	
 	public void mainActivitTask() {
-		VehicleMessage vehicleMessage = new VehicleMessage(VehicleMessageType.STATUS, isObd2Valid());
+		VehicleMessage vehicleMessage = new VehicleMessage(
+				VehicleMessageType.STATUS, 
+				isObd2Valid()
+		);
+		vehicleMessage.setSpeed(Obd2Gateway.getSpeedInKmh(btSocket));
+		vehicleMessage.setRpm(Obd2Gateway.getRpm(btSocket));
 		
 		/* Calling the SendPingMsg action to the PingBroadcastReceiver */
 		Intent i = new Intent(MainActivityTask.this, CommunicationService.class);
