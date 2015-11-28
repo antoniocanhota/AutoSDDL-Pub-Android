@@ -15,8 +15,10 @@ import android.app.ActivityManager.RunningServiceInfo;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Handler;
@@ -44,9 +46,15 @@ public abstract class MainActivityTask extends Activity {
 	private BluetoothSocket btSocket;
 	private boolean obd2Valid = false;
 	
+	BroadcastReceiver locationMessageReceiver;
+	private double lat;
+	private double lng;
+	
 	public void startMainActivityTask() {		
 		if (!isRunning()) {
 			onMainActivityStart();
+			
+			startLocationService();
 			
 			sendStartMainActivityTaskMessage();
 			
@@ -74,6 +82,8 @@ public abstract class MainActivityTask extends Activity {
 
 	public void stopMainActivityTask() {
 		if (isRunning()) {
+			stopLocationService();
+			
 			handler.removeCallbacks(runnable); 
 			runnable = null;
 			handler = null;
@@ -101,6 +111,8 @@ public abstract class MainActivityTask extends Activity {
 		);
 		vehicleMessage.setSpeed(Obd2Gateway.getSpeedInKmh(btSocket));
 		vehicleMessage.setRpm(Obd2Gateway.getRpm(btSocket));
+		vehicleMessage.setLat(lat);
+		vehicleMessage.setLng(lng);
 		
 		/* Calling the SendPingMsg action to the PingBroadcastReceiver */
 		Intent i = new Intent(MainActivityTask.this, CommunicationService.class);
@@ -171,6 +183,27 @@ public abstract class MainActivityTask extends Activity {
 	
 	protected boolean isObd2Valid() {
 		return obd2Valid;
+	}
+	
+	protected void startLocationService() {
+		Intent locationIntent = new Intent(this, LocationService.class);
+		startService(locationIntent);
+		
+		locationMessageReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {				
+				lat = intent.getDoubleExtra("lat", 0.0);
+				lng = intent.getDoubleExtra("lng", 0.0);			
+			}
+		};
+		
+		LocalBroadcastManager.getInstance(this).registerReceiver(
+				locationMessageReceiver, new IntentFilter("locationChanged"));
+	}
+	
+	protected void stopLocationService() {
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(
+				locationMessageReceiver);
 	}
     
     //See http://androidsnippets.com/generate-random-uuid-and-store-it
