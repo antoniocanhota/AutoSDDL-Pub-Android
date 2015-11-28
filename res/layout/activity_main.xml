@@ -41,12 +41,31 @@
 	        android:textSize="12sp" />
     </LinearLayout>
     
+    <LinearLayout android:id="@+id/lyt_obd2"
+    	android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp"
+        android:orientation="horizontal"
+        android:layout_below="@id/lyt_conn" >
+        
+	    <TextView android:id="@+id/txt_obd2_lbl"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/obd2" />
+	    
+	    <TextView android:id="@+id/txt_obd2"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="12sp" />
+    </LinearLayout>
+    
     <LinearLayout android:id="@+id/lyt_servicebtns" 
        		android:orientation="horizontal" 
 	    	android:layout_centerHorizontal="true"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content" 
-        	android:layout_below="@id/lyt_conn"
+        	android:layout_below="@id/lyt_obd2"
         	android:paddingBottom="12dp" >
 	    
 	    <Button android:id="@+id/btn_startservice"

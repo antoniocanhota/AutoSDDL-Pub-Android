@@ -2,15 +2,26 @@ package br.pucrio.inf.acanhota.autosddl.pub;
 
 import java.util.UUID;
 
+import com.github.pires.obd.commands.protocol.EchoOffCommand;
+import com.github.pires.obd.commands.protocol.LineFeedOffCommand;
+import com.github.pires.obd.commands.protocol.ObdResetCommand;
+import com.github.pires.obd.commands.protocol.SelectProtocolCommand;
+import com.github.pires.obd.commands.protocol.TimeoutCommand;
+import com.github.pires.obd.enums.ObdProtocols;
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import br.pucrio.acanhota.autosddl.commons.VehicleMessage;
 import br.pucrio.acanhota.autosddl.commons.VehicleMessageType;
 import lac.contextnet.sddl_pingservicetest.CommunicationService;
@@ -29,6 +40,9 @@ public abstract class MainActivityTask extends Activity {
 	
 	private Handler handler;
 	private Runnable runnable;
+	
+	private BluetoothSocket btSocket;
+	private boolean obd2Valid = false;
 	
 	public void startMainActivityTask() {		
 		if (!isRunning()) {
@@ -116,10 +130,43 @@ public abstract class MainActivityTask extends Activity {
         }
         return false;
     }
+	protected void startObd2(String deviceAddress) {
+		try {
+			BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+			BluetoothDevice device = btAdapter.getRemoteDevice(deviceAddress);
+			UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+			
+			btSocket = device.createRfcommSocketToServiceRecord(uuid);
+			
+			btSocket.connect();
+			
+			new ObdResetCommand().run(btSocket.getInputStream(), btSocket.getOutputStream());				
+			new EchoOffCommand().run(btSocket.getInputStream(), btSocket.getOutputStream());				
+			new LineFeedOffCommand().run(btSocket.getInputStream(), btSocket.getOutputStream());				
+			new TimeoutCommand(62).run(btSocket.getInputStream(), btSocket.getOutputStream());				
+			new SelectProtocolCommand(ObdProtocols.AUTO).run(btSocket.getInputStream(), btSocket.getOutputStream());
+			
+			obd2Valid = true;
+			onObd2Connected(device);
+		} catch (Exception e) {
+			obd2Valid = false;
+			onObd2NotConnected();
+			Log.d("OBD-2", "Não conectou");
+			e.printStackTrace();
+		}
+	}
+    
+    protected abstract void onObd2Connected(BluetoothDevice device);
+
+	protected abstract void onObd2NotConnected();
     
     protected boolean isRunning() {
     	return (handler != null);
     }
+	
+	protected boolean isObd2Valid() {
+		return obd2Valid;
+	}
     
     //See http://androidsnippets.com/generate-random-uuid-and-store-it
     public synchronized static String GetUUID(Context context) {
