@@ -73,12 +73,14 @@ public abstract class MainActivityTask extends Activity {
 	}
 
 	private void sendStartMainActivityTaskMessage() {
-		VehicleMessage vehicleMessage = new VehicleMessage(VehicleMessageType.START, isObd2Valid());			
+		VehicleMessage vehicleMessage = new VehicleMessage(getLicensePlate(), VehicleMessageType.START, isObd2Valid());			
 		Intent i = new Intent(MainActivityTask.this, CommunicationService.class);
 		i.setAction(CommunicationService.ACTION_SEND_VEHICLE_STATUS);
 		i.putExtra(CommunicationService.VEHICLE_STATUS, vehicleMessage);
 		LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(i);		
 	}
+
+	protected abstract String getLicensePlate();
 
 	protected abstract void onMainActivityStart();
 
@@ -99,7 +101,7 @@ public abstract class MainActivityTask extends Activity {
 	}
 
 	private void sendStopMainActivityTaskMessage() {
-		VehicleMessage vehicleMessage = new VehicleMessage(VehicleMessageType.END, isObd2Valid());			
+		VehicleMessage vehicleMessage = new VehicleMessage(getLicensePlate(), VehicleMessageType.END, isObd2Valid());			
 		Intent i = new Intent(MainActivityTask.this, CommunicationService.class);
 		i.setAction(CommunicationService.ACTION_SEND_VEHICLE_STATUS);
 		i.putExtra(CommunicationService.VEHICLE_STATUS, vehicleMessage);
@@ -110,6 +112,7 @@ public abstract class MainActivityTask extends Activity {
 	
 	public void mainActivitTask() {
 		VehicleMessage vehicleMessage = new VehicleMessage(
+				getLicensePlate(),
 				VehicleMessageType.STATUS, 
 				isObd2Valid()
 		);

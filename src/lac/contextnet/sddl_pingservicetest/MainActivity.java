@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import br.pucrio.inf.acanhota.autosddl.pub.MainActivityTask;
 
@@ -35,6 +36,7 @@ import br.pucrio.inf.acanhota.autosddl.pub.MainActivityTask;
 public class MainActivity extends MainActivityTask {
 	/* Static Elements */
 	private TextView txt_uuid;		
+	private EditText et_plate;
 	private TextView txt_conn;
 	private TextView txt_obd2;
 	private Button btn_startservice;
@@ -52,6 +54,7 @@ public class MainActivity extends MainActivityTask {
 
 		/* GUI Elements */
 		txt_uuid = (TextView) findViewById(R.id.txt_uuid);				
+		et_plate = (EditText) findViewById(R.id.et_plate);
 		txt_conn = (TextView) findViewById(R.id.txt_conn);
 		txt_obd2 = (TextView) findViewById(R.id.txt_obd2);
 		btn_startservice = (Button) findViewById(R.id.btn_startservice);
@@ -157,5 +160,10 @@ public class MainActivity extends MainActivityTask {
 	@Override
 	protected void onObd2NotConnected() {
 		txt_obd2.setText("Fora do alcance, desligado ou dispositivo inválido");
+	}
+
+	@Override
+	protected String getLicensePlate() {
+		return et_plate.getText().toString();
 	}	
 }

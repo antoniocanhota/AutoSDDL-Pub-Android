@@ -5,6 +5,8 @@
     
     <!-- Static Elements -->
     <string name="uuid">UUID:</string>
+    <string name="plate">License plate</string>
+    <string name="plate_hint">ABX-1234</string>    
     <string name="conn">Server connection:</string>
     <string name="obd2">OBD-2:</string>    
     <string name="startservice">Start Service!</string>
