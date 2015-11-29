@@ -1,5 +1,6 @@
 package br.pucrio.inf.acanhota.autosddl.pub;
 
+import java.util.Date;
 import java.util.UUID;
 
 import com.github.pires.obd.commands.protocol.EchoOffCommand;
@@ -49,6 +50,7 @@ public abstract class MainActivityTask extends Activity {
 	BroadcastReceiver locationMessageReceiver;
 	private double lat;
 	private double lng;
+	private AccelerationCalculator accelarationCalculator; 
 	
 	public void startMainActivityTask() {		
 		if (!isRunning()) {
@@ -84,6 +86,8 @@ public abstract class MainActivityTask extends Activity {
 		if (isRunning()) {
 			stopLocationService();
 			
+			accelarationCalculator = null;
+			
 			handler.removeCallbacks(runnable); 
 			runnable = null;
 			handler = null;
@@ -109,8 +113,15 @@ public abstract class MainActivityTask extends Activity {
 				VehicleMessageType.STATUS, 
 				isObd2Valid()
 		);
-		vehicleMessage.setSpeed(Obd2Gateway.getSpeedInKmh(btSocket));
-		vehicleMessage.setRpm(Obd2Gateway.getRpm(btSocket));
+		
+		int currVehicleSpeed = Obd2Gateway.getSpeedInKmh(btSocket);
+		Date currDate = vehicleMessage.getCreatedAt();
+		if (accelarationCalculator == null) {
+			accelarationCalculator = new AccelerationCalculator(currVehicleSpeed, currDate);
+		}
+		vehicleMessage.setSpeed(currVehicleSpeed);
+		vehicleMessage.setVehicleAcceleration(accelarationCalculator.getAcceleration(currVehicleSpeed, currDate));
+		vehicleMessage.setRpm(Obd2Gateway.getRpm(btSocket));		
 		vehicleMessage.setLat(lat);
 		vehicleMessage.setLng(lng);
 		
